@@ -1,165 +1,61 @@
-# def solution(board):
-# 	board[0][0],board[0][1] = -1,-1
-# 	move = [[0,0],[0,1]]
-# 	cnt = -2
-# 	while True:
-# 		next_move = []
-# 		for robot in move:
-# 			try:
-# 				# right
-# 				if board[robot[0]][robot[1]+1] == 0:
-# 					board[robot[0]][robot[1]+1] = cnt
-# 					next_move.append([robot[0],robot[1]+1])
-# 			except:
-# 				pass
-# 			try:
-# 				# down
-# 				if board[robot[0]+1][robot[1]] == 0:
-# 					board[robot[0]+1][robot[1]] = cnt
-# 					next_move.append([robot[0]+1,robot[1]])
-# 			except:
-# 				pass
-# 			try:
-# 				# left
-# 				if board[robot[0]][robot[1]-1] == 0 and robot[1]-1 >= 0:
-# 					board[robot[0]][robot[1]-1] = cnt
-# 					next_move.append([robot[0],robot[1]-1])
-# 			except:
-# 				pass
-# 			try:
-# 				# up
-# 				if board[robot[0]-1][robot[1]] == 0 and robot[0]-1 >= 0:
-# 					board[robot[0]-1][robot[1]] = cnt
-# 					next_move.append([robot[0]-1,robot[1]])
-# 			except:
-# 				pass
-# 		if board[len(board)-1][len(board)-1] != 0:
-# 			break
-# 		cnt -= 1
-# 		move = next_move
-# 	for i in board:
-# 		print(i)
-# 	return board[len(board)-1][len(board)-1] * -1 -1
-
 def solution(board):
-	board[0][0],board[0][1] = -1,-1
 	head = [[0,1]]
 	tail = [[0,0]]
+	board[0][0],board[0][1] = -1,-1 
+	movex,movey = [0,1,0,-1],[-1,0,1,0]
+	n = len(board)
 	cnt = -2
-	while True:
+	while board[n-1][n-1] == 0:
 		new_head = []
 		new_tail = []
-		print(head,tail)
 		for h,t in zip(head,tail):
-			#row
-			if head[0] == tail[0]:
-				#right
-				try:
-					if board[head[0]][head[1]+1] == 0 or board[tail[0]][tail[1]+1] == 0:
-						new_head.append([head[0],head[1]+1])
-						new_tail.append([tail[0],tail[1]+1])
-						if board[head[0]][head[1]+1] == 0:
-							board[head[0]][head[1]+1] = cnt
-						else:
-							board[tail[0]][tail[1]+1] = cnt
-				except:
-					pass 
-				#left
-				try:
-					if (board[head[0]][head[1]-1] == 0 or board[tail[0]][tail[1]-1] == 0) and head[1] > 0 and tail[1] > 0:
-						new_head.append([head[0],head[1]-1])
-						new_tail.append([tail[0],tail[1]-1])
-						if board[head[0]][head[1]-1] == 0:
-							board[head[0]][head[1]-1] = cnt
-						else:
-							board[tail[0]][tail[1]-1] = cnt
-				except:
-					pass
-				#clock_up
-				try:
-					# up spin
-					if board[head[0]-1][haad[1]] != 1 and board[tail[0]-1][tail[1]] != 1 and head[0] > 0 and tail[0] > 0:
-						# head
-						if board[head[0]-1][head[1]] == 0:
-							new_head.append([head[0],head[1]])
-							new_tail.append([head[0]-1,head[1]])
-						# tail
-						if board[tail[0]-1][tail[1]] == 0:
-							new_head.append([tail[0],tail[1]])
-							new_tail.append([tail[0]-1,tail[1]])
-				except:
-					pass
-				#clock_down
-				try:
-					# down spin
-					if board[head[0]+1][haad[1]] != 1 and board[tail[0]+1][tail[1]] != 1:
-						# head
-						if board[head[0]+1][head[1]] == 0:
-							new_head.append([head[0],head[1]])
-							new_tail.append([head[0]+1,head[1]])
-						# tail
-						if board[tail[0]+1][tail[1]] == 0:
-							new_head.append([tail[0],tail[1]])
-							new_tail.append([tail[0]+1,tail[1]])
-				except:
-					pass	
-			#col
+			#move
+			for y,x in zip(movey,movex): # move up->right->down->left
+				if 0 <= x+h[1] < n and 0 <= y+h[y] < n and 0 <= x+t[1] < n and 0 <= y+t[0] < n:
+					if board[y+h[0]][x+h[1]] == 0 or board[y+t[0]][x+t[1]] == 0:
+						new_head.append([y+h[0],x+h[1]])
+						new_tail.append([y+t[0],x+t[1]])
+						board[y+h[0]][x+h[1]] = cnt
+						board[y+t[0]][x+t[1]] = cnt
+			#spin_row
+			if h[0] == t[0]:
+				#spin_down
+				if 0 <= h[0]+1 < n and 0 <= t[0]+1 < n and board[h[0]+1][h[1]] != 1 and board[t[0]+1][t[1]] != 1:
+					new_head.append([h[0],h[1]])
+					new_tail.append([h[0]+1,h[1]])
+					new_head.append([t[0],t[1]])
+					new_tail.append([t[0]+1,t[1]])
+				#spin_up
+
+				if 0 <= h[0]-1 < n and 0 <= t[0]-1 < n and board[h[0]-1][h[1]] != 1 and board[t[0]-1][t[1]] != 1:
+					print(h,t)
+					new_head.append([h[0],h[1]])
+					new_tail.append([h[0]-1,h[1]])
+					new_head.append([t[0],t[1]])
+					new_tail.append([t[0]-1,t[1]])
+				print(new_head)
+				print(new_tail)
+			#spin_col
 			else:
-				#up
-				try:
-					if (board[head[0]-1][head[1]] == 0 or board[tail[0]-1][tail[1]] == 0) and tail[0] > 0 and head[0] > 0:
-						new_head.append([head[0]-1,head[1]])
-						new_tail.append([tail[0]-1,tail[1]])
-						if board[head[0]-1][head[1]] == 0:
-							board[head[0]-1][head[1]] = cnt
-						else:
-							board[tail[0]-1][tail[1]] = cnt
-				except:
-					pass
-				#down
-				try:
-					if board[head[0]+1][head[1]] == 0 or board[tail[0]+1][tail[1]] == 0:
-						new_head.append([head[0]+1,head[1]])
-						new_tail.append([tail[0]+1,tail[1]])
-						if board[head[0]+1][head[1]] == 0:
-							board[head[0]+1][head[1]] = cnt
-						else:
-							board[tail[0]+1][tail[1]] = cnt
-				except:
-					pass
-				#clock_right
-				try:
-					if board[head[0]][head[1]+1] != 1 and board[tail[0]][tail[1]+1] != 1:
-						# head
-						if board[head[0]][head[1]+1] == 0:
-							new_head.append([head[0],head[1]])
-							new_tail.append([head[0],head[1]+1])
-						# tail
-						if board[tail[0]][tail[1]+1] == 0:
-							new_head.append([tail[0],tail[1]])
-							new_tail.append([tail[0],tail[1]+1]) 
-				except:
-					pass
-				#clock_left
-				try:
-					if (board[head[0]][head[1]-1] != 1 and board[tail[0]][tail[1]-1] != 1) and head[1] > 0 and tail[1] > 0:
-						# head
-						if board[head[0]][head[1]-1] == 0:
-							new_head.append([head[0],head[1]])
-							new_tail.append([head[0],head[1]-1])
-						# tail
-						if board[tail[0]][tail[1]-1] == 0:
-							new_head.append([tail[0],tail[1]])
-							new_tail.append([tail[0],tail[1]-1])
-				except:
-					pass
-			head = new_head
-			tail = new_tail
+				#spin_right
+				if (0 <= h[1]+1 < n and 0 <= t[1]+1 < n) and board[h[0]][h[1]+1] != 1 and board[t[0]][t[1]+1] != 1:
+					new_head.append([h[0],h[1]])
+					new_tail.append([h[0],h[1]+1])
+					new_head.append([t[0],t[1]])
+					new_tail.append([t[0],t[1]+1])
+				#spin_left
+				if (0 <= h[1]-1 < n and 0 <= t[1]-1 < n) and board[h[0]][h[1]-1] != 1 and board[t[0]][t[1]-1] != 1:
+					new_head.append([h[0],h[1]])
+					new_tail.append([h[0],h[1]-1])
+					new_head.append([t[0],t[1]])
+					new_tail.append([t[0],t[1]-1])
 		for i in board:
 			print(i)
-		if board[len(board)-1][len(board)-1] != 0:
-			break
-	return board[len(board)-1][len(board)-1] * -1 - 1
+		print("-------------")
+		cnt -= 1
+		head = new_head
+		tail = new_tail
 
+	return board[n-1][n-1]*-1 -1
 
-print(solution([[0, 0, 0, 0, 0, 0, 1], [1, 1, 1, 1, 0, 0, 1], [0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 1, 1], [0, 0, 1, 0, 0, 0, 0]]))
+print(solution([[0, 0, 0, 0, 0, 0, 0], [0,0,0,0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]))
