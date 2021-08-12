@@ -1,0 +1,8 @@
+SET @hour_list = -1;
+SELECT
+(@hour_list := @hour_list + 1) AS 'HOUR',
+(SELECT COUNT(*) FROM ANIMAL_OUTS WHERE HOUR(DATETIME)=@hour_list) AS 'COUNT'
+FROM ANIMAL_OUTS
+WHERE @hour_list < 23;
+
+for문 돌리기 참고할 것
