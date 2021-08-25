@@ -3,8 +3,6 @@ def solution(n,k,cmd):
 	result = ['O' for _ in range(n)]
 	stack = []
 	for c in cmd:
-		print(link)
-		print(c,k)
 		if c[0] == 'U':
 			for _ in range(int(c[2:])):
 				k = link[k][0]
@@ -16,10 +14,8 @@ def solution(n,k,cmd):
 			result[k] = 'X'
 			
 			if link[k][1] != n:
-				print(link[k][1])
 				link[link[k][1]][0] = link[k][0]
 			if link[k][0] != -1:
-				print(link[k][0])
 				link[link[k][0]][1] = link[k][1]
 			if link[k][1] == n:
 				k = link[k][0]
