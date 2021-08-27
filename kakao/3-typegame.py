@@ -3,7 +3,7 @@ def solution(n,t,m,p):
 	stack = [0]
 	dic = {10:'A',11:'B',12:'C',13:'D',14:'E',15:'F'}
 	loop = 0
-	while len(stack) != t:
+	while len(stack) < m*t:
 		index = loop
 		cycle = []
 		while index != 0:
@@ -13,9 +13,11 @@ def solution(n,t,m,p):
 				cycle.append(dic[index%n])
 			index = index // n
 		stack += reversed(cycle)
-		answer += 'a'
 		loop += 1
-	return
+	for i in range(t):
+		answer += str(stack[m*i+p-1])
+
+	return answer
 
 if __name__ == "__main__":
-	print(solution(16,50,2,1))
+	print(solution(2,4,2,1))
