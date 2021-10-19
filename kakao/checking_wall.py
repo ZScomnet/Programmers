@@ -1,20 +1,32 @@
-from itertools import combinations
+def checkwall(n,weak,dist,db):
+	if len(weak) == 0:
+		if db[0] < len(dist):
+			db[0] = len(dist)
+
+	else:
+		for d in range(len(dist)):
+			for w in range(len(weak)):
+				find_weak = []
+				start = weak[w]
+				for point in weak:
+					if start+dist[d] > n:
+						if start+dist[d]-n < point < start:
+							find_weak.append(point)
+					else:
+						if point < start or start+dist[d] < point:
+							find_weak.append(point)
+					
+				dist_copy = dist.copy()
+				del dist_copy[d]
+				checkwall(n,find_weak,dist_copy,db)
 
 def solution(n,weak,dist):
-	weak_term = [n-weak[-1]+weak[0]]+[abs(weak[i-1] - weak[i]) for i in range(1,len(weak))]
-	dist = sorted(dist,reverse=True)
-	answer = -1
-	length = 0
-	for i in range(len(dist)):
-		com = list(combinations(weak_term,len(weak)-i-1))
-		length += dist[i]
-		for time in com:
-			if length >= sum(list(time)):
-				answer = i+1
-				break
-		if answer != -1:
-			break
-	return answer
+	db = [-1]
+	checkwall(n,weak,dist,db)
+	if db[0] == -1:
+		return -1
+	else:
+		return len(dist) - db[0]
 
 if __name__ == "__main__":
-	print(solution(200,[0,50,100,150],[10,10,10,10]))
+	print(solution(12,[1,5,6,10],[1,2,3,4]))

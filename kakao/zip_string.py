@@ -14,10 +14,8 @@ def solution(msg):
 	if w not in dic:
 		dic[w] = len(dic)+1
 	answer.append(dic[w])
-	print(answer)
 
-
-	return
+	return answer
 
 if __name__ == "__main__":
 	print(solution("ABABABABABABABAB"))
