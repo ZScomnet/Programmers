@@ -10,11 +10,10 @@ def solution(matrixes):
 		for row in range(len(matrixes)-depth):
 			for start in range(depth):
 				if dp[row][row+depth] == 0:
-					dp[row][row+depth] = s[row][row+start][0] * s[row][row+start][1] * s[row+1][row+depth][1] + dp[row][row+start] + dp[row+1][depth]
+					dp[row][row+depth] = s[row][row+start][0] * s[row][row+start][1] * s[row+1][row+depth][1] + dp[row][row+start] + dp[row+1][row+depth]
 					s[row][row+depth] = (s[row][row+start][0],s[row+1][row+depth][1])
 				else:
-					dp[row][row+depth] = min(dp[row][row+depth],s[row][row+start][0] * s[row][row+start][1] * s[row+start+1][row+depth][1] + dp[row][row+start]+dp[row+start+1][depth])
-
+					dp[row][row+depth] = min(dp[row][row+depth],s[row][row+start][0] * s[row][row+start][1] * s[row+start+1][row+depth][1] + dp[row][row+start]+dp[row+start+1][row+depth])
 	return dp[0][-1]
 
 if __name__ == "__main__":
