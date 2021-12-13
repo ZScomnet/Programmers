@@ -4,16 +4,14 @@ input = sys.stdin.readline
 
 def solution(V,E,pivot,graph):
 	cost = [1e9] * (V+1)
-	q = deque(graph[pivot])
+	q = deque([pivot])
 	cost[pivot] = 0
-	graph[pivot] = -1
-	while q:
-		start,end,value = q.popleft()
-		if cost[end] > cost[start]+value:
-			cost[end] = cost[start]+value
-		if graph[end] != -1:
-			q += graph[end]
-			graph[end] = -1
+	while q: 
+		for t in graph[q.popleft()]:
+			start,end,value = t
+			if cost[end] > cost[start] + value:
+				cost[end] = cost[start] + value
+				q.append(end)
 	for i in range(1,len(cost)):
 		if cost[i] == 1e9:
 			print("INF")
