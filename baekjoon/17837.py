@@ -2,80 +2,76 @@ import sys
 from collections import deque
 input = sys.stdin.readline
 
-def move_white(board_q,row,col,i,way,units):
-	d = [(0,0),(0,1),(0,-1),(-1,0),(1,0)]
-	temp = deque()
-	while board_q[row+d[way][0]][col+d[way][1]]:
-		temp.append(board_q[row+d[way][0]][col+d[way][1]].popleft())
+# 1 : right, 2 : left, 3 : up, 4 : down
+way = [(0,0),(0,1),(0,-1),(-1,0),(1,0)]
 
-	board_q[row+d[way][0]][col+d[way][1]].append(board_q[row][col].popleft())
-	while board_q[row+d[way][0]][col+d[way][1]][-1] != i:
-		board_q[row+d[way][0]][col+d[way][1]].append(board_q[row][col].popleft())
+def move(board_q,row,col,w,i):
+	move_q = deque()
+	move_q.append(board_q[row][col].popleft())
 
-	board_q[row+d[way][0]][col+d[way][1]] += temp
+	while move_q[-1] != i:
+		move_q.append(board_q[row][col].popleft())
 
-	for i in board_q[row+d[way][0]][col+d[way][1]]:
-		units[i][0] = row+d[way][0]
-		units[i][1] = col+d[way][1]
+	while move_q:
+		board_q[row+w[0]][col+w[1]].appendleft(move_q.pop())	
 
+def save(units,board_q,row,col):
+	for i in board_q[row][col]:
+		units[i-1][0] = row
+		units[i-1][1] = col
+
+def reverse(board_q,row,col,i):
+	reverse_q = deque()
+	reverse_q.append(board_q[row][col].popleft())
+
+	while reverse_q[-1] != i:
+		reverse_q.append(board_q[row][col].popleft())
+
+	while reverse_q:
+		board_q[row][col].append(reverse_q.pop())
 
 def solution(N,K,board,units):
-	board_q = [[deque() for _ in range(N+2)] for _ in range(N+2)]
-	d = [(0,0),(0,1),(0,-1),(-1,0),(1,0)]
-
-	for i in range(K):
-		row,col,way = units[i]
-		board_q[row][col].append(i)
+	board_q = [[deque() for _ in range(N+2)] for _ in range(N+2)] 
+	for i in range(len(units)):
+		row,col,w = units[i]
+		board_q[row][col].append(i+1)
 	cnt = 0
-	while cnt < 1000:
-		cnt+=1
-		for i in range(K):
-			row,col,way = units[i]
+	while cnt <= 1000:
+		cnt += 1
+		# print(cnt)
+		# for i in board_q:
+		# 	print(i)
+		# for i in units:
+		# 	print(i)
+		# print()
+		for i in range(len(units)):
+			row,col,w = units[i]
 			if len(board_q[row][col]) >= 4:
 				return cnt
-			# 1 : right, 2 : left, 3 : up, 4 : down
-			if board[row+d[way][0]][col+d[way][1]] == 0:
-				move_white(board_q,row,col,i,way,units)
-			elif board[row+d[way][0]][col+d[way][1]] == 1:
-				move_white(board_q,row,col,i,way,units)
-				row,col,way = units[i]
-				temp = deque()
-				while board_q[row][col][0] != i:
-					temp.append(board_q[row][col].popleft())
-				temp.append(board_q[row][col].popleft())
-				temp = deque(reversed(temp))
-				while board_q[row][col]:
-					temp.append(board_q[row][col].pop())
-				board_q[row][col] = temp
+			w = way[w]
+			if board[row+w[0]][col+w[1]] == 0:
+				move(board_q,row,col,w,i+1)
+				save(units,board_q,row+w[0],col+w[1])
+			elif board[row+w[0]][col+w[1]] == 1:
+				move(board_q,row,col,w,i+1)
+				reverse(board_q,row+w[0],col+w[1],i+1)
+				save(units,board_q,row+w[0],col+w[1])
 			else:
-				for unit in board_q[row][col]:
-					if units[unit][2] % 2 == 0:
-						units[unit][2] -= 1
-					else:
-						units[unit][2] += 1
-					if unit == i:
-						break
-				row,col,way = units[i]
-				if board[row+d[way][0]][col+d[way][1]] == 0:
-					move_white(board_q,row,col,i,way,units)
-				elif board[row+d[way][0]][col+d[way][1]] == 1:
-					move_white(board_q,row,col,i,way,units)
-					row,col,way = units[i]
-					temp = deque()
-					while board_q[row][col][0] != i:
-						temp.append(board_q[row][col].popleft())
-					temp.append(board_q[row][col].popleft())
-					temp = deque(reversed(temp))
-					while board_q[row][col]:
-						temp.append(board_q[row][col].pop())
-					board_q[row][col] = temp
-		if len(board_q[units[-1][0]][units[-1][1]]) >= 4:
-			return cnt 
-		for k in board_q[1:N+1]:
-			print(k[1:N+1])
-		for k in range(K):
-			print(k,units[k])
-		print()
+				if units[i][2] % 2 == 0:
+					units[i][2] -= 1
+				else:
+					units[i][2] += 1
+				row,col,w = units[i]
+				w = way[w]
+				if board[row+w[0]][col+w[1]] == 0:
+					move(board_q,row,col,w,i+1)
+					save(units,board_q,row+w[0],col+w[1])
+				elif board[row+w[0]][col+w[1]] == 1:
+					move(board_q,row,col,w,i+1)
+					reverse(board_q,row+w[0],col+w[1],i+1)
+					save(units,board_q,row+w[0],col+w[1])
+			if len(board_q[units[i][0]][units[i][1]]) >= 4:
+				return cnt 
 	return -1
 
 if __name__ == "__main__":
