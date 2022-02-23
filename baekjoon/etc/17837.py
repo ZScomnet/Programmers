@@ -28,7 +28,7 @@ def reverse(board_q,row,col,i):
 		reverse_q.append(board_q[row][col].popleft())
 
 	while reverse_q:
-		board_q[row][col].append(reverse_q.pop())
+		board_q[row][col].appendleft(reverse_q.popleft())
 
 def solution(N,K,board,units):
 	board_q = [[deque() for _ in range(N+2)] for _ in range(N+2)] 
@@ -38,12 +38,6 @@ def solution(N,K,board,units):
 	cnt = 0
 	while cnt <= 1000:
 		cnt += 1
-		# print(cnt)
-		# for i in board_q:
-		# 	print(i)
-		# for i in units:
-		# 	print(i)
-		# print()
 		for i in range(len(units)):
 			row,col,w = units[i]
 			if len(board_q[row][col]) >= 4:
