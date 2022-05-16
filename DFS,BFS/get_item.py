@@ -26,7 +26,7 @@ def solution(rectangle,characterX,characterY,itemX,itemY):
 				return cnt // 2
 			for i in d:
 				drow,dcol = i
-				if 0 <= row+drow < 51 and 0 <= col+dcol < 51:
+				if 0 <= row+drow < 101 and 0 <= col+dcol < 101:
 					if board[row+drow][col+dcol] == 1:
 						next_q.append([row+drow,col+dcol])
 		q = next_q
