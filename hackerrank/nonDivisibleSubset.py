@@ -20,17 +20,14 @@ def nonDivisibleSubset(k, s):
 	num = [0] * k
 	for i in s:
 		num[i%k] += 1
-	print(num)
-	for i in range(k):
-		if (i+i)%k == 0 and num[i] > 1:
-			continue
-		answer = max(num[i],answer)
-		for j in range(i+1,k):
-			print(i,j,answer)
-			if (j+j)%k == 0:
-				continue
-			if (i+j)%k != 0:
-				answer = max(num[i]+num[j],answer)
+	if num[0] > 0:
+		answer += 1
+	for i in range(1,k//2+1):
+		if i == k/2:
+			break
+		answer += max(num[i],num[k-i])
+	if k%2 == 0 and num[k//2] > 0:
+		answer += 1
 	return answer
     # Write your code here
 
