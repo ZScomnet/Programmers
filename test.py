@@ -1,27 +1,14 @@
-def solution(balance, transaction, abnormal):
+T = 10
+# 여러개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
+for test_case in range(1, T + 1):
+    N = int(input())
+    building = list(map(int,input().split()))
     answer = 0
-    ban = [0] * 101
-    for i in abnormal:
-        ban[i] = 1
-    stack = [[[i+1,balance[i]]] for i in range(len(balance))]
-    for i in transaction:
-        fr,to,cost = i
-        fr,to = fr-1,to-1
-        total = 0
-        while total != cost:
-            user,money = stack[fr].pop()
-            if total+money <= cost:
-                stack[to].append([user,money])
-                total+=money
-            else:
-                stack[to].append([user,cost-total])
-                stack[fr].append([user,money-(cost-total)])
-                total += cost-total
-    answer = [0] * len(balance)
-    for i in range(len(stack)):
-        for part in stack[i]:
-            user,money = part
-            if ban[user] != 1:
-                answer[i] += money
-    return answer
-print(solution([30, 30, 30, 30],[[1, 2, 10], [2, 3, 20], [3, 4, 5], [3, 4, 30]],[2,3]))
+    for i in range(N):
+        max_h = 0
+        for j in range(-2,3):
+            if 0 <= i+j < N and j != 0:
+                max_h = max(max_h,building[i+j])
+        if building[i] - max_h > 0:
+            answer += building - max_h
+    print(f'#{test_case} {answer}')
